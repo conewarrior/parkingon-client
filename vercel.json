@@ -1,6 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/html/login.html" }
-  ],
-  "cleanUrls": true
+  "routes": [
+    { "src": "^/$", "dest": "/html/login.html" }
+  ]
 }
