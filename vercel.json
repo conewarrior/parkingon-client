@@ -1,5 +1,18 @@
 {
   "routes": [
-    { "src": "^/$", "dest": "/html/dashboard-worker.html" }
+    { "src": "^/$", "dest": "/html/dashboard-worker.html" },
+    { "src": "^/dashboard$", "dest": "/html/dashboard.html" },
+    { "src": "^/dashboard-worker$", "dest": "/html/dashboard-worker.html" },
+    { "src": "^/login$", "dest": "/html/login.html" },
+    { "src": "^/apt$", "dest": "/html/apt/apt-manage.html" },
+    { "src": "^/apt/lpr-device$", "dest": "/html/apt/lpr-device.html" },
+    { "src": "^/apt/car-manage$", "dest": "/html/apt/car-manage.html" },
+    { "src": "^/voc$", "dest": "/html/voc/voc-list.html" },
+    { "src": "^/voc/inout-car$", "dest": "/html/voc/inout-car.html" },
+    { "src": "^/voc/control-history$", "dest": "/html/voc/control-history.html" },
+    { "src": "^/system/user-manage$", "dest": "/html/system/user-manage.html" },
+    { "src": "^/system/code-manage$", "dest": "/html/system/code-manage.html" },
+    { "src": "^/system/config$", "dest": "/html/system/config.html" },
+    { "src": "^/system/notify-manage$", "dest": "/html/system/notify-manage.html" }
   ]
 }
