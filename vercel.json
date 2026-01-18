@@ -1,5 +1,5 @@
 {
   "routes": [
-    { "src": "^/$", "dest": "/html/login.html" }
+    { "src": "^/$", "dest": "/html/dashboard-worker.html" }
   ]
 }
