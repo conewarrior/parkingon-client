@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 파킹온 아파트너</title>
+    <!-- Prevent favicon 404 errors -->
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/login.css">
+    <script src="../js/common.js"></script>
+</head>
+<body class="login-page">
+    <!-- 로그인 컨테이너 -->
+    <div class="login-container">
+        <!-- 로고 섹션 -->
+        <div class="logo-section">
+            <img src="../images/parkingon-logo.png" alt="ParkingOn Logo" class="login-logo">
+        </div>
+
+        <!-- 로그인 카드 -->
+        <div class="login-card">
+            <h2 class="login-title">로그인</h2>
+
+            <!-- 성공 메시지 (예시 - 실제로는 서버에서 전달) -->
+            <!--
+            <div class="success-message" style="background-color: #e8f5e9; color: #2e7d32; padding: 12px; border-radius: 4px; margin-bottom: 16px; text-align: center;">
+                비밀번호가 성공적으로 변경되었습니다.
+            </div>
+            -->
+
+            <!-- 에러 메시지 (예시 - 실제로는 서버에서 전달) -->
+            <!--
+            <div class="error-message" style="background-color: #fee; color: #c33; padding: 12px; border-radius: 4px; margin-bottom: 16px; text-align: center;">
+                아이디 또는 비밀번호가 올바르지 않습니다.
+            </div>
+            -->
+
+            <form action="/login" method="post" class="login-form">
+                <!-- 아이디 입력 -->
+                <div class="form-group">
+                    <input
+                        type="text"
+                        name="username"
+                        id="username"
+                        class="form-input"
+                        placeholder="아이디 입력"
+                        required>
+                    <span class="error-message" id="username-error">
+                        아이디를 입력해주세요.
+                    </span>
+                </div>
+
+                <!-- 비밀번호 입력 -->
+                <div class="form-group">
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        class="form-input"
+                        placeholder="비밀번호"
+                        required>
+                    <span class="error-message" id="password-error">
+                        비밀번호를 입력해주세요.
+                    </span>
+                </div>
+
+                <!-- 로그인 버튼 -->
+                <button type="submit" class="btn-login">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    로그인
+                </button>
+
+                <!-- 비밀번호 변경 링크 -->
+                <div class="login-footer">
+                    <a href="#" class="change-password-link" onclick="alert('비밀번호 재설정 기능은 백엔드 서버가 필요합니다.'); return false;">비밀번호 재설정</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/login.js"></script>
+</body>
+</html>

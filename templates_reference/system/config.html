@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>환경설정 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/management.css}">
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header('시스템관리 → 환경설정')}"></div>
+
+    <main class="management-container">
+        <!-- 좌측: 아파트 목록 -->
+        <aside class="management-sidebar">
+            <div class="sidebar-search">
+                <h3 class="sidebar-title">아파트명</h3>
+                <div class="search-input-group">
+                    <input type="text" class="form-input" placeholder="검색...">
+                    <button class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        조회
+                    </button>
+                </div>
+            </div>
+
+            <div class="item-table-wrapper">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="apt-all">
+                            </th>
+                            <th>아파트 코드</th>
+                            <th>아파트명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentList">
+                        <tr class="item-table-row selected">
+                            <td>
+                                <input type="checkbox" id="apt-all-0" checked>
+                            </td>
+                            <td class="item-code">A000000</td>
+                            <td class="item-name">전체</td>
+                        </tr>
+                        <tr class="item-table-row" th:each="apt, iterStat : ${apartments}">
+                            <td>
+                                <input type="checkbox" th:id="'apt' + ${apt.id}">
+                            </td>
+                            <td class="item-code" th:text="${apt.code}">A1001234</td>
+                            <td class="item-name" th:text="${apt.name}">삼성1단지</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                <button class="btn-page active">1</button>
+                <button class="btn-page">2</button>
+                <button class="btn-page">3</button>
+                <button class="btn-page">4</button>
+                <button class="btn-page">5</button>
+                <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+            </div>
+        </aside>
+
+        <!-- 우측: 환경설정 내용 -->
+        <div class="management-content">
+            <!-- 환경설정 폼 -->
+            <div class="form-section">
+                <form class="config-form">
+                    <div class="form-grid">
+                        <!-- 헬스체크 주기시간 -->
+                        <label class="form-field-label">헬스체크 주기시간</label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <select class="form-select" style="width: 100px;">
+                                <option>1</option>
+                                <option>2</option>
+                                <option selected>3</option>
+                                <option>5</option>
+                                <option>10</option>
+                            </select>
+                            <span>분</span>
+                        </div>
+
+                        <!-- 장애시 주기시간 -->
+                        <label class="form-field-label">장애시 주기시간</label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <select class="form-select" style="width: 100px;">
+                                <option selected>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>5</option>
+                                <option>10</option>
+                            </select>
+                            <span>분</span>
+                        </div>
+
+                        <!-- 헬스체크 장애 정을 차단기 자동 열림 -->
+                        <label class="form-field-label"></label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="autoOpen" checked>
+                            <label for="autoOpen">헬스체크 장애 정을 차단기 자동 열림</label>
+                        </div>
+
+                        <!-- 콜센터 운영 상태 -->
+                        <label class="form-field-label">콜센터 운영 상태</label>
+                        <select class="form-select">
+                            <option selected>정상</option>
+                            <option>점검</option>
+                            <option>중지</option>
+                        </select>
+
+                        <hr style="grid-column: 1 / -1; margin: 20px 0; border: none; border-top: 1px solid var(--border-light);">
+
+                        <!-- 상담원용 -->
+                        <label class="form-field-label">상담원용</label>
+                        <input type="text" class="form-input" value="http://parkingon.tooz.co.kr:9030" readonly>
+
+                        <!-- Standby -->
+                        <label class="form-field-label">Standby</label>
+                        <input type="text" class="form-input" value="http://standby.tooz.co.kr:9031" readonly>
+
+                        <!-- PBX 인터페이스 -->
+                        <label class="form-field-label">PBX 인터페이스</label>
+                        <input type="text" class="form-input" value="http://pbx.tooz.co.kr:9033" readonly>
+
+                        <!-- 아파트너 -->
+                        <label class="form-field-label">아파트너</label>
+                        <input type="text" class="form-input" value="http://aptner.tooz.co.kr:9034" readonly>
+
+                        <!-- DB 서버 -->
+                        <label class="form-field-label">DB 서버</label>
+                        <input type="text" class="form-input" value="dbms.tooz.co.kr:9040" readonly>
+
+                        <!-- 기존시스템 -->
+                        <label class="form-field-label">기존시스템</label>
+                        <input type="text" class="form-input" value="http://legacy.tooz.co.kr:9050" readonly>
+
+                        <!-- Rtsp 서버 -->
+                        <label class="form-field-label">Rtsp 서버</label>
+                        <input type="text" class="form-input" value="" readonly>
+
+                        <!-- ftp 서버 -->
+                        <label class="form-field-label">ftp 서버</label>
+                        <input type="text" class="form-input" value="ftp://parkingon.tooz.co.kr:9800" readonly>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            저장
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/config.js}"></script>
+</body>
+</html>

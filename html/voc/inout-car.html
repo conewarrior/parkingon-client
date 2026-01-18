@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입출차 이력 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="../../css/app.css">
+    <link rel="stylesheet" href="../../css/management.css">
+    <script src="../../js/common.js"></script>
+</head>
+<body>
+    <!-- Header -->
+        <!-- Header -->
+    <header class="app-header">
+            <div class="header-left">
+                <img src="../../images/parkingon-logo.png" alt="ParkingOn Logo" class="brand-logo" style="height: 40px;">
+                <h1 class="page-title" >VOC관리 → 입출차 이력</h1>
+            </div>
+
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+
+            <nav class="header-nav" id="headerNav">
+                <!-- Main 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">Main</a>
+                    <div class="nav-dropdown">
+                        <a href="../../dashboard" class="dropdown-item">대시보드(멀티스크린)</a>
+                        <a href="../../dashboard-worker" class="dropdown-item">대시보드(근무자용)</a>
+                    </div>
+                </div>
+
+                <!-- APT관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">APT관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../../apt" class="dropdown-item">아파트 단지 관리</a>
+                        <a href="../../apt/lpr-device" class="dropdown-item">입/출구 관제기</a>
+                        <a href="../../apt/car-manage" class="dropdown-item">차량 관리</a>
+                    </div>
+                </div>
+
+                <!-- VOC관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">VOC관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../../voc" class="dropdown-item">VOC 이력</a>
+                        <a href="../../voc/inout-car" class="dropdown-item">입출차 이력</a>
+                        <a href="../../voc/control-history" class="dropdown-item">차단기 수동제어 이력</a>
+                    </div>
+                </div>
+
+                <!-- 시스템관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">시스템관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../../system/user-manage" class="dropdown-item">사용자 관리</a>
+                        <a href="../../system/code-manage" class="dropdown-item">공통코드 관리</a>
+                        <a href="../../system/config" class="dropdown-item">환경설정</a>
+                        <a href="../../system/notify-manage" class="dropdown-item">공지사항</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="header-right">
+                <span class="user-info" >관리자</span>
+                <button class="btn-logout" onclick="location.href='/logout'">로그아웃</button>
+            </div>
+        </header>
+
+        <script>
+            function toggleMobileMenu() {
+                const nav = document.getElementById('headerNav');
+                nav.classList.toggle('mobile-menu-open');
+            }
+        </script>
+
+    <main class="management-container">
+        <!-- 좌측: 아파트 목록 -->
+        <aside class="management-sidebar">
+            <div class="sidebar-search">
+                <h3 class="sidebar-title">아파트명</h3>
+                <div class="search-input-group">
+                    <input type="text" class="form-input" placeholder="검색...">
+                    <button class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        조회
+                    </button>
+                </div>
+            </div>
+
+            <div class="item-table-wrapper">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="apt-all">
+                            </th>
+                            <th>아파트 코드</th>
+                            <th>아파트명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentList">
+                        <tr class="item-table-row selected">
+                            <td>
+                                <input type="checkbox" id="apt-all-0" checked>
+                            </td>
+                            <td class="item-code">A000000</td>
+                            <td class="item-name">전체</td>
+                        </tr>
+                        <tr class="item-table-row">
+                            <td>
+                                <input type="checkbox">
+                            </td>
+                            <td class="item-code">A1001234</td>
+                            <td class="item-name">삼성1단지</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                <button class="btn-page active">1</button>
+                <button class="btn-page">2</button>
+                <button class="btn-page">3</button>
+                <button class="btn-page">4</button>
+                <button class="btn-page">5</button>
+                <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+            </div>
+        </aside>
+
+        <!-- 우측: 입출차 이력 조회 -->
+        <div class="management-content">
+            <!-- 입출차 이력 테이블 -->
+            <div class="data-grid">
+                <!-- 검색 바 + 테이블 컨트롤 -->
+                <div class="data-grid-header">
+                    <div class="search-bar">
+                        <div class="input-group">
+                            <label>조회기간</label>
+                            <input type="date" class="form-input" value="2025-10-21">
+                            <span>~</span>
+                            <input type="date" class="form-input" value="2025-10-21">
+                        </div>
+
+                        <div class="input-group">
+                            <label>고객유형</label>
+                            <select class="form-select">
+                                <option>전체</option>
+                                <option>입주민</option>
+                                <option>방문</option>
+                                <option>정기방문</option>
+                                <option>출역</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>차량번호</label>
+                            <input type="text" class="form-input" placeholder="차량번호 입력">
+                        </div>
+
+                        <button class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            조회
+                        </button>
+                    </div>
+
+                    <div class="table-controls">
+                        <select class="form-select" style="width: 100px;">
+                            <option value="10">10건</option>
+                            <option value="20">20건</option>
+                            <option value="50">50건</option>
+                            <option value="100">100건</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>차량번호</th>
+                                <th>입차일시</th>
+                                <th>출차일시</th>
+                                <th>고객구분</th>
+                                <th>동</th>
+                                <th>호</th>
+                                <th>주차시간</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>12가1234</td>
+                                <td>2025-10-21 08:30:25</td>
+                                <td>-</td>
+                                <td>입주민</td>
+                                <td>101</td>
+                                <td>1002</td>
+                                <td>-</td>
+                                <td>
+                                    <span class="badge" th:classappend="${history.inoutType == 'IN'} ? 'badge-success' : 'badge-info'">입차</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="8" style="text-align: center;">입출차 이력이 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                    <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-page">4</button>
+                    <button class="btn-page">5</button>
+                    <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                    <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+        <!-- Footer -->
+    <footer class="app-footer">
+            <div class="footer-info">
+                <span>로그인명: <span >관리자</span></span>
+                <span>로그인시간: <span >--:--:--</span></span>
+                <span>현재시간: <span id="currentTime">--:--:--</span></span>
+            </div>
+        </footer>
+
+        <script>
+            // 실시간 시계 업데이트
+            function updateClock() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const date = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                const timeString = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+                const element = document.getElementById('currentTime');
+                if (element) {
+                    element.textContent = timeString;
+                }
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        </script>
+
+    <script src="../../js/inout-car.js"></script>
+</body>
+</html>

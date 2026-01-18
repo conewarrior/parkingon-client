@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입/출구 관제기 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="../../css/app.css">
+    <link rel="stylesheet" href="../../css/management.css">
+    <script src="../../js/common.js"></script>
+</head>
+<body>
+    <!-- Header -->
+        <!-- Header -->
+    <header class="app-header">
+            <div class="header-left">
+                <img src="../../images/parkingon-logo.png" alt="ParkingOn Logo" class="brand-logo" style="height: 40px;">
+                <h1 class="page-title" >APT관리 → 입/출구 관제기</h1>
+            </div>
+
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+
+            <nav class="header-nav" id="headerNav">
+                <!-- Main 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">Main</a>
+                    <div class="nav-dropdown">
+                        <a href="../../dashboard" class="dropdown-item">대시보드(멀티스크린)</a>
+                        <a href="../../dashboard-worker" class="dropdown-item">대시보드(근무자용)</a>
+                    </div>
+                </div>
+
+                <!-- APT관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">APT관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../../apt" class="dropdown-item">아파트 단지 관리</a>
+                        <a href="../../apt/lpr-device" class="dropdown-item">입/출구 관제기</a>
+                        <a href="../../apt/car-manage" class="dropdown-item">차량 관리</a>
+                    </div>
+                </div>
+
+                <!-- VOC관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">VOC관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../../voc" class="dropdown-item">VOC 이력</a>
+                        <a href="../../voc/inout-car" class="dropdown-item">입출차 이력</a>
+                        <a href="../../voc/control-history" class="dropdown-item">차단기 수동제어 이력</a>
+                    </div>
+                </div>
+
+                <!-- 시스템관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">시스템관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../../system/user-manage" class="dropdown-item">사용자 관리</a>
+                        <a href="../../system/code-manage" class="dropdown-item">공통코드 관리</a>
+                        <a href="../../system/config" class="dropdown-item">환경설정</a>
+                        <a href="../../system/notify-manage" class="dropdown-item">공지사항</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="header-right">
+                <span class="user-info" >관리자</span>
+                <button class="btn-logout" onclick="location.href='/logout'">로그아웃</button>
+            </div>
+        </header>
+
+        <script>
+            function toggleMobileMenu() {
+                const nav = document.getElementById('headerNav');
+                nav.classList.toggle('mobile-menu-open');
+            }
+        </script>
+
+    <main class="management-container">
+        <!-- 좌측: 아파트 목록 -->
+        <aside class="management-sidebar">
+            <div class="sidebar-search">
+                <h3 class="sidebar-title">아파트명</h3>
+                <div class="search-input-group">
+                    <input type="text" class="form-input" placeholder="검색...">
+                    <button class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        조회
+                    </button>
+                </div>
+            </div>
+
+            <div class="item-table-wrapper">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="apt-all">
+                            </th>
+                            <th>아파트 코드</th>
+                            <th>아파트명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentList">
+                        <tr class="item-table-row"
+                            th:classappend="${iterStat.index == 0} ? 'selected' : ''">
+                            <td>
+                                <input type="checkbox"
+                                       th:checked="${iterStat.index == 0}">
+                            </td>
+                            <td class="item-code">A1001234</td>
+                            <td class="item-name">삼성1단지</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                <button class="btn-page active">1</button>
+                <button class="btn-page">2</button>
+                <button class="btn-page">3</button>
+                <button class="btn-page">4</button>
+                <button class="btn-page">5</button>
+                <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+            </div>
+        </aside>
+
+        <!-- 우측: LPR 장비 목록 및 입력 -->
+        <div class="management-content" style="display: flex; flex-direction: column; gap: var(--spacing-4);">
+            <!-- 장비 목록 -->
+            <div class="data-grid" style="flex: 1; min-height: 0;">
+                <div class="grid-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>아파트명</th>
+                                <th>장비코드</th>
+                                <th>장비종류</th>
+                                <th>장비명</th>
+                                <th>장비URL</th>
+                                <th>Voip</th>
+                                <th>RTSP주소</th>
+                                <th>사용여부</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>삼성2단지</td>
+                                <td>PK030</td>
+                                <td>입구LPR</td>
+                                <td>정문입구</td>
+                                <td>test.iptime.org:1234</td>
+                                <td>010-1234-5678</td>
+                                <td>rtsp://test...</td>
+                                <td><span class="badge badge-success">Y</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="8" style="text-align: center;">등록된 장비가 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                    <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-page">4</button>
+                    <button class="btn-page">5</button>
+                    <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                    <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+                </div>
+            </div>
+
+            <!-- 장비 등록/수정 폼 -->
+            <div class="form-section">
+                <form class="device-form">
+                    <div class="form-field-fixed">
+                        <label class="form-field-label">아파트명</label>
+                        <div class="form-fixed-value">삼성2단지</div>
+                    </div>
+
+                    <div class="form-grid">
+                        <label class="form-field-label">장비명</label>
+                        <input type="text" class="form-input" value="정문입구">
+
+                        <label class="form-field-label">장비종류</label>
+                        <select class="form-select">
+                            <option>입구LPR</option>
+                            <option>출구LPR</option>
+                            <option>CCTV</option>
+                        </select>
+
+                        <label class="form-field-label">Voip</label>
+                        <input type="tel" class="form-input" value="010-1234-5678">
+
+                        <label class="form-field-label">장비URL</label>
+                        <input type="text" class="form-input" value="test.iptime.org:1234">
+
+                        <label class="form-field-label">RTSP주소</label>
+                        <input type="text" class="form-input" value="rtsp://test.iptime.org:9654/profile2">
+
+                        <label class="form-field-label">사용여부</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="isActive" value="Y" id="activeY" checked>
+                                <label for="activeY">사용</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="isActive" value="N" id="activeN">
+                                <label for="activeN">미사용</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                            </svg>
+                            초기화
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            저장
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+        <!-- Footer -->
+    <footer class="app-footer">
+            <div class="footer-info">
+                <span>로그인명: <span >관리자</span></span>
+                <span>로그인시간: <span >--:--:--</span></span>
+                <span>현재시간: <span id="currentTime">--:--:--</span></span>
+            </div>
+        </footer>
+
+        <script>
+            // 실시간 시계 업데이트
+            function updateClock() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const date = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                const timeString = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+                const element = document.getElementById('currentTime');
+                if (element) {
+                    element.textContent = timeString;
+                }
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        </script>
+
+    <script src="../../js/lpr-device.js"></script>
+</body>
+</html>

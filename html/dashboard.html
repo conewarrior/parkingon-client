@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대시보드 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/popup.css">
+    <script src="../js/common.js"></script>
+</head>
+<body>
+    <!-- Header -->
+        <!-- Header -->
+    <header class="app-header">
+            <div class="header-left">
+                <img src="../images/parkingon-logo.png" alt="ParkingOn Logo" class="brand-logo" style="height: 40px;">
+                <h1 class="page-title" >대시보드(멀티스크린)</h1>
+            </div>
+
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+
+            <nav class="header-nav" id="headerNav">
+                <!-- Main 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">Main</a>
+                    <div class="nav-dropdown">
+                        <a href="../dashboard" class="dropdown-item">대시보드(멀티스크린)</a>
+                        <a href="../dashboard-worker" class="dropdown-item">대시보드(근무자용)</a>
+                    </div>
+                </div>
+
+                <!-- APT관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">APT관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../apt" class="dropdown-item">아파트 단지 관리</a>
+                        <a href="../apt/lpr-device" class="dropdown-item">입/출구 관제기</a>
+                        <a href="../apt/car-manage" class="dropdown-item">차량 관리</a>
+                    </div>
+                </div>
+
+                <!-- VOC관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">VOC관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../voc" class="dropdown-item">VOC 이력</a>
+                        <a href="../voc/inout-car" class="dropdown-item">입출차 이력</a>
+                        <a href="../voc/control-history" class="dropdown-item">차단기 수동제어 이력</a>
+                    </div>
+                </div>
+
+                <!-- 시스템관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">시스템관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../system/user-manage" class="dropdown-item">사용자 관리</a>
+                        <a href="../system/code-manage" class="dropdown-item">공통코드 관리</a>
+                        <a href="../system/config" class="dropdown-item">환경설정</a>
+                        <a href="../system/notify-manage" class="dropdown-item">공지사항</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="header-right">
+                <span class="user-info" >관리자</span>
+                <button class="btn-logout" onclick="location.href='/logout'">로그아웃</button>
+            </div>
+        </header>
+
+        <script>
+            function toggleMobileMenu() {
+                const nav = document.getElementById('headerNav');
+                nav.classList.toggle('mobile-menu-open');
+            }
+        </script>
+
+    <main class="main-content">
+        <!-- 차트 섹션 -->
+        <section class="dashboard-charts">
+            <!-- 공통 날짜 선택기 -->
+            <div class="chart-date-selector">
+                <div class="select-wrapper">
+                    <select class="date-selector">
+                        <option>2025-10-28</option>
+                        <option>2025-10-27</option>
+                    </select>
+                    <svg class="select-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6L8 10L12 6" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>상담 VOC 지역 분포</h3>
+                    </div>
+                    <canvas id="regionChart"></canvas>
+                    <div class="chart-legend">
+                        <span><span class="legend-color" style="background: #4BC0C0;"></span>수도권</span>
+                        <span><span class="legend-color" style="background: #FF6384;"></span>강원권</span>
+                        <span><span class="legend-color" style="background: #36A2EB;"></span>충청권</span>
+                        <span><span class="legend-color" style="background: #FFCE56;"></span>남부권</span>
+                        <span><span class="legend-color" style="background: #9966FF;"></span>제주권</span>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>상담 VOC 인입 분포</h3>
+                    </div>
+                    <canvas id="callStatusChart"></canvas>
+                    <div class="chart-legend">
+                        <span><span class="legend-color" style="background: #FF6384;"></span>홍길동</span>
+                        <span><span class="legend-color" style="background: #36A2EB;"></span>홍길순</span>
+                        <span><span class="legend-color" style="background: #FFCE56;"></span>강원래</span>
+                        <span><span class="legend-color" style="background: #4BC0C0;"></span>나태주</span>
+                        <span><span class="legend-color" style="background: #9966FF;"></span>김영웅</span>
+                        <span><span class="legend-color" style="background: #FF9F40;"></span>이영웅</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 단지 현황 -->
+        <section class="status-summary">
+            <div class="summary-card">
+                <h4>총 단지</h4>
+                <p class="summary-number">123</p>
+            </div>
+            <div class="summary-card">
+                <h4>정상 운영 단지</h4>
+                <p class="summary-number success">120</p>
+            </div>
+            <div class="summary-card">
+                <h4>장애 단지</h4>
+                <p class="summary-number error">3</p>
+            </div>
+        </section>
+
+        <!-- VOC 고객구분 -->
+        <section class="voc-section">
+            <h3 class="section-title">VOC 고객구분</h3>
+            <div class="voc-stats">
+                <div class="stat-item">
+                    <span class="stat-label">전체</span>
+                    <span class="stat-value">500</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">일반</span>
+                    <span class="stat-value">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">입주민</span>
+                    <span class="stat-value">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">주기/방문</span>
+                    <span class="stat-value">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">방문</span>
+                    <span class="stat-value">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">출역</span>
+                    <span class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">화이트</span>
+                    <span class="stat-value">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- VOC 발생 목적 -->
+        <section class="voc-section">
+            <h3 class="section-title">VOC 발생 목적</h3>
+            <div class="voc-stats">
+                <div class="stat-item">
+                    <span class="stat-label">전체</span>
+                    <span class="stat-value">500</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">방문</span>
+                    <span class="stat-value">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">미인식</span>
+                    <span class="stat-value">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">공무</span>
+                    <span class="stat-value">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">기타</span>
+                    <span class="stat-value">200</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 입출차 현황 테이블 -->
+        <section class="inout-section">
+            <div class="section-header">
+                <h3 class="section-title">입차/출차 현황(일)</h3>
+                <div class="select-wrapper">
+                    <select class="filter-select">
+                        <option>2025-10-20</option>
+                        <option>2025-10-19</option>
+                        <option>2025-10-18</option>
+                    </select>
+                    <svg class="select-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6L8 10L12 6" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="inout-table-wrapper">
+                <table class="inout-table">
+                    <thead>
+                        <tr>
+                            <th colspan="2">구분</th>
+                            <th>0시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 입차 섹션 -->
+                        <tr>
+                            <td rowspan="5" class="section-label">입차</td>
+                            <td class="sub-label">입주민</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="sub-label">방문</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="sub-label">블랙</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="sub-label">화이트</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="sub-label">주기/방문</td>
+                            <td></td>
+                        </tr>
+
+                        <!-- 출차 섹션 -->
+                        <tr>
+                            <td colspan="2" class="section-label-horizontal">출차</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 신규/폐쇄 현황 차트 -->
+        <section class="status-chart-section">
+            <div class="section-header">
+                <h3 class="section-title">신규/폐쇄 현황(연)</h3>
+                <div class="select-wrapper">
+                    <select class="filter-select">
+                        <option>2025</option>
+                        <option>2024</option>
+                    </select>
+                    <svg class="select-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6L8 10L12 6" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="statusChart"></canvas>
+                <p class="chart-subtitle">월별 신규/폐쇄 단지 추이</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+        <!-- Footer -->
+    <footer class="app-footer">
+            <div class="footer-info">
+                <span>로그인명: <span >관리자</span></span>
+                <span>로그인시간: <span >--:--:--</span></span>
+                <span>현재시간: <span id="currentTime">--:--:--</span></span>
+            </div>
+        </footer>
+
+        <script>
+            // 실시간 시계 업데이트
+            function updateClock() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const date = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                const timeString = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+                const element = document.getElementById('currentTime');
+                if (element) {
+                    element.textContent = timeString;
+                }
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        </script>
+
+    <!-- 공지사항 팝업 -->
+    <div th:replace="~{fragments/notify-popup :: notify-popup}"></div>
+
+    <!-- 공지사항 데이터 전달 -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        allNotifies = /*[[${notifies}]]*/ [];
+        currentNotifyIndex = 0;
+
+        // 날짜 포맷 변환
+        allNotifies = allNotifies.map(notify => ({
+            ...notify,
+            sendDate: notify.sendDate ? new Date(notify.sendDate).toLocaleString('ko-KR') : '-'
+        }));
+
+        // 페이지 로드 후 pagination 업데이트
+        if (typeof updatePagination === 'function') {
+            updatePagination();
+        }
+        /*]]>*/
+    </script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

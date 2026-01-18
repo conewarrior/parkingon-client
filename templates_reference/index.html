@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파킹온 시스템</title>
+    <link rel="icon" href="data:,">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: #f5f7fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 30px;
+        }
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .menu-item {
+            background: #0891b2;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .menu-item:hover {
+            background: #0e7490;
+        }
+        .status {
+            background: #10b981;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🅿️ 파킹온 관리 시스템</h1>
+
+        <div class="status">
+            ✅ 시스템이 정상적으로 작동 중입니다!
+        </div>
+
+        <div class="menu">
+            <a href="/dashboard" class="menu-item">
+                <h2>📊 대시보드</h2>
+                <p>통합 현황 보기</p>
+            </a>
+
+            <a href="/apt" class="menu-item">
+                <h2>🏢 APT 관리</h2>
+                <p>아파트 단지 관리</p>
+            </a>
+
+            <a href="/voc" class="menu-item">
+                <h2>📞 VOC 관리</h2>
+                <p>고객 상담 이력</p>
+            </a>
+
+            <a href="/system" class="menu-item">
+                <h2>⚙️ 시스템 관리</h2>
+                <p>사용자 및 설정</p>
+            </a>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f9fafb; border-radius: 8px;">
+            <h3>테스트 계정</h3>
+            <ul>
+                <li><strong>관리자:</strong> admin / admin</li>
+                <li><strong>매니저:</strong> manager1 / 1234</li>
+                <li><strong>경비:</strong> guard1 / 1234</li>
+                <li><strong>상담원:</strong> operator1 / 1234</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

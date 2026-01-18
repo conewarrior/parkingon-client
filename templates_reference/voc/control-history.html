@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>차단기 수동제어 이력 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/management.css}">
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header('VOC관리 → 차단기 수동제어 이력')}"></div>
+
+    <main class="management-container">
+        <!-- 좌측: 아파트 목록 -->
+        <aside class="management-sidebar">
+            <div class="sidebar-search">
+                <h3 class="sidebar-title">아파트명</h3>
+                <div class="search-input-group">
+                    <input type="text" class="form-input" placeholder="검색...">
+                    <button class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        조회
+                    </button>
+                </div>
+            </div>
+
+            <div class="item-table-wrapper">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="apt-all">
+                            </th>
+                            <th>아파트 코드</th>
+                            <th>아파트명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentList">
+                        <tr class="item-table-row selected">
+                            <td>
+                                <input type="checkbox" id="apt-all-0" checked>
+                            </td>
+                            <td class="item-code">A000000</td>
+                            <td class="item-name">전체</td>
+                        </tr>
+                        <tr class="item-table-row" th:each="apt, iterStat : ${apartments}">
+                            <td>
+                                <input type="checkbox" th:id="'apt' + ${apt.id}">
+                            </td>
+                            <td class="item-code" th:text="${apt.code}">A1001234</td>
+                            <td class="item-name" th:text="${apt.name}" th:attr="title=${apt.name}">삼성1단지</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                <button class="btn-page active">1</button>
+                <button class="btn-page">2</button>
+                <button class="btn-page">3</button>
+                <button class="btn-page">4</button>
+                <button class="btn-page">5</button>
+                <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+            </div>
+        </aside>
+
+        <!-- 우측: 수동제어 이력 조회 -->
+        <div class="management-content">
+            <!-- 수동제어 이력 테이블 -->
+            <div class="data-grid">
+                <!-- 검색 바 + 테이블 컨트롤 -->
+                <div class="data-grid-header">
+                    <div class="search-bar">
+                        <div class="input-group">
+                            <label>조회기간</label>
+                            <input type="date" class="form-input" value="2025-10-21">
+                            <span>~</span>
+                            <input type="date" class="form-input" value="2025-10-21">
+                        </div>
+
+                        <div class="input-group">
+                            <label>상태</label>
+                            <select class="form-select">
+                                <option>전체</option>
+                                <option>열림</option>
+                                <option>닫힘</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            조회
+                        </button>
+                    </div>
+
+                    <div class="table-controls">
+                        <select class="form-select" style="width: 100px;">
+                            <option value="10">10건</option>
+                            <option value="20">20건</option>
+                            <option value="50">50건</option>
+                            <option value="100">100건</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>처리일시</th>
+                                <th>사유</th>
+                                <th>차량번호</th>
+                                <th>상태</th>
+                                <th>장비명</th>
+                                <th>처리자</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="control : ${controls}" th:if="${controls != null}">
+                                <td th:text="${#temporals.format(control.controlTime, 'yyyy-MM-dd HH:mm:ss')}">2025-10-21 10:30:25</td>
+                                <td th:text="${control.reason}">사전 승인된 방문차량</td>
+                                <td th:text="${control.carNumber}">12가1111</td>
+                                <td>
+                                    <span class="badge" th:classappend="${control.controlType == 'ALLOW' or control.controlType == '열림'} ? 'badge-success' : 'badge-error'"
+                                          th:text="${control.controlType == 'ALLOW' ? '열림' : (control.controlType == 'DENY' ? '닫힘' : control.controlType)}">열림</span>
+                                </td>
+                                <td th:text="${control.gateName}">정문</td>
+                                <td th:text="${control.controller}">관리자</td>
+                            </tr>
+                            <tr th:if="${controls == null or controls.isEmpty()}">
+                                <td colspan="6" style="text-align: center;">제어 이력이 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                    <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-page">4</button>
+                    <button class="btn-page">5</button>
+                    <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                    <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/control-history.js}"></script>
+</body>
+</html>

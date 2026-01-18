@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Notify Popup Fragment -->
+    <div th:fragment="notify-popup">
+        <!-- 팝업 오버레이 -->
+        <div class="popup-overlay" id="notifyPopup" th:if="${showPopup}" style="display: flex;">
+            <div class="popup-container">
+                <!-- 팝업 헤더 (제목 + 일련번호 + 닫기) -->
+                <div class="popup-header">
+                    <h3 class="popup-title" th:text="${currentNotify?.title} ?: '공지사항'">공지사항</h3>
+                    <div class="popup-header-right">
+                        <span class="popup-serial-num">일련번호: <span th:text="${currentNotify?.id} ?: '1'">1</span></span>
+                        <button class="btn-close" onclick="closePopup()">×</button>
+                    </div>
+                </div>
+
+                <!-- 스크롤 가능한 콘텐츠 영역 -->
+                <div class="popup-body">
+                    <!-- 공지 이미지 (있는 경우) -->
+                    <div class="content-image" th:if="${currentNotify?.imageUrl != null}">
+                        <img th:src="${currentNotify.imageUrl}" alt="공지 이미지">
+                    </div>
+
+                    <!-- 팝업 정보 (발신자/발송일시) -->
+                    <div class="popup-info">
+                        <div class="info-row">
+                            <span class="info-label">발신자:</span>
+                            <span class="info-value" th:text="${currentNotify?.sender} ?: '콜센터 관리자'">콜센터 관리자</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">발송일시:</span>
+                            <span class="info-value" th:text="${#temporals.format(currentNotify?.sendDate, 'yyyy-MM-dd HH:mm:ss')} ?: '2025-11-14 13:47'">2025-11-14 13:47</span>
+                        </div>
+                    </div>
+
+                    <!-- 팝업 내용 -->
+                    <div class="popup-content">
+                        <div class="content-text" th:utext="${currentNotify?.content} ?: '내용 없음'">
+                            내용 없음
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 네비게이션 -->
+                <div class="popup-navigation">
+                    <button class="btn-nav btn-prev" onclick="showPrevNotify()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                        이전
+                    </button>
+                    <div class="pagination">
+                        <span class="current-page" id="currentPage">1</span>
+                        <span class="page-separator">/</span>
+                        <span class="total-pages" id="totalPages" th:text="${totalNotifies} ?: '3'">3</span>
+                    </div>
+                    <button class="btn-nav btn-next" onclick="showNextNotify()">
+                        다음
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 오늘 하루 보지 않기 -->
+                <div class="popup-footer">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="hideToday" onchange="setHideToday()">
+                        <span>오늘 하루 보지 않기</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <script th:src="@{/js/notify-popup.js}"></script>
+    </div>
+</body>
+</html>

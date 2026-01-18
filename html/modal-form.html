@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>차량 검색 모달 - ParkingOn</title>
+    <link rel="stylesheet" href="../css/modal.css">
+</head>
+<body>
+
+<!--
+========================================
+사용법:
+1. 아래 모달 HTML을 원하는 페이지에 복사
+2. openModal('formModal')로 모달 열기
+3. 폼 필드와 버튼 액션을 상황에 맞게 수정
+========================================
+-->
+
+<!-- 모달 오버레이 및 컨테이너 -->
+<div id="formModal" class="modal-overlay hidden">
+    <div class="modal-container">
+
+        <!-- 모달 헤더 -->
+        <div class="modal-header">
+            <h2 class="modal-title">차량 검색</h2>
+            <button class="btn-close" onclick="closeModal('formModal')">&times;</button>
+        </div>
+
+        <!-- 모달 본문 -->
+        <div class="modal-body">
+            <form id="searchForm">
+
+                <!-- 라디오 버튼 그룹 -->
+                <div class="modal-form-group">
+                    <div class="modal-radio-group">
+                        <div class="modal-radio-item">
+                            <input type="radio" id="recent1h" name="searchPeriod" value="1h">
+                            <label for="recent1h">최근 1시간내 입차</label>
+                        </div>
+                        <div class="modal-radio-item">
+                            <input type="radio" id="lastEntry" name="searchPeriod" value="last" checked>
+                            <label for="lastEntry">마지막 입차</label>
+                        </div>
+                        <div class="modal-radio-item">
+                            <input type="radio" id="recent3months" name="searchPeriod" value="3m">
+                            <label for="recent3months">최근입력(3개월이내)</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 검색 영역 (텍스트 입력) -->
+                <div class="modal-form-group">
+                    <label class="modal-form-label">차량번호 입력</label>
+                    <textarea
+                        id="searchText"
+                        class="modal-textarea"
+                        placeholder="차량번호를 입력하세요..."
+                    ></textarea>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- 모달 푸터 -->
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-secondary" onclick="closeModal('formModal')">닫기</button>
+            <button class="modal-btn modal-btn-primary" onclick="handleSearch()">차량 검색</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    // 모달 열기 함수
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
+    }
+
+    // 모달 닫기 함수
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+
+    // 검색 처리 함수 (개발자가 수정 필요)
+    function handleSearch() {
+        const searchText = document.getElementById('searchText').value;
+        const selectedPeriod = document.querySelector('input[name="searchPeriod"]:checked').value;
+
+        console.log('검색 기간:', selectedPeriod);
+        console.log('검색어:', searchText);
+
+        // 여기에 실제 검색 로직 구현
+        // 예: API 호출, 페이지 이동 등
+
+        alert(`검색 실행:\n기간: ${selectedPeriod}\n검색어: ${searchText}`);
+
+        // 검색 후 모달 닫기
+        closeModal('formModal');
+    }
+
+    // 오버레이 클릭 시 모달 닫기
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal-overlay')) {
+            e.target.classList.add('hidden');
+        }
+    });
+
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const openModals = document.querySelectorAll('.modal-overlay:not(.hidden)');
+            openModals.forEach(modal => modal.classList.add('hidden'));
+        }
+    });
+
+    // 테스트용: 페이지 로드 시 모달 자동 열기
+    window.addEventListener('DOMContentLoaded', function() {
+        openModal('formModal');
+    });
+</script>
+
+<!--
+========================================
+커스터마이징 가이드:
+1. 모달 제목 변경: <h2 class="modal-title"> 내용 수정
+2. 라디오 버튼 옵션 변경: .modal-radio-item 추가/삭제
+3. 입력 필드 변경: textarea를 input이나 다른 필드로 변경 가능
+4. 버튼 액션 변경: handleSearch() 함수 수정
+5. 다른 페이지에 통합 시:
+   - modal.css를 해당 페이지에서 import
+   - 모달 HTML만 복사하여 붙여넣기
+   - openModal('formModal') 함수를 원하는 이벤트에 연결
+   - handleSearch() 함수를 백엔드 로직에 연결
+========================================
+-->
+
+</body>
+</html>

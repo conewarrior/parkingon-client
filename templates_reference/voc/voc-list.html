@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOC 이력 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/management.css}">
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header('VOC관리 → VOC 이력')}"></div>
+
+    <main class="management-container">
+        <!-- 좌측: 아파트 목록 -->
+        <aside class="management-sidebar">
+            <div class="sidebar-search">
+                <h3 class="sidebar-title">아파트명</h3>
+                <div class="search-input-group">
+                    <input type="text" class="form-input" placeholder="검색...">
+                    <button class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        조회
+                    </button>
+                </div>
+            </div>
+
+            <div class="item-table-wrapper">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="apt-all">
+                            </th>
+                            <th>아파트 코드</th>
+                            <th>아파트명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentList">
+                        <tr class="item-table-row selected">
+                            <td>
+                                <input type="checkbox" id="apt-all-0" checked>
+                            </td>
+                            <td class="item-code">A000000</td>
+                            <td class="item-name">전체</td>
+                        </tr>
+                        <tr class="item-table-row" th:each="apt, iterStat : ${apartments}">
+                            <td>
+                                <input type="checkbox" th:id="'apt' + ${apt.id}">
+                            </td>
+                            <td class="item-code" th:text="${apt.code}">A1001234</td>
+                            <td class="item-name" th:text="${apt.name}" th:attr="title=${apt.name}">삼성1단지</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                <button class="btn-page active">1</button>
+                <button class="btn-page">2</button>
+                <button class="btn-page">3</button>
+                <button class="btn-page">4</button>
+                <button class="btn-page">5</button>
+                <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+            </div>
+        </aside>
+
+        <!-- 우측: VOC 이력 조회 -->
+        <div class="management-content">
+            <!-- VOC 이력 테이블 -->
+            <div class="data-grid">
+                <!-- 검색 바 + 테이블 컨트롤 -->
+                <div class="data-grid-header">
+                    <div class="search-bar">
+                        <div class="input-group">
+                            <label>조회기간</label>
+                            <input type="date" id="startDate" class="form-input" value="2025-10-21">
+                            <span>~</span>
+                            <input type="date" id="endDate" class="form-input" value="2025-10-21">
+                        </div>
+
+                        <div class="input-group">
+                            <label>고객구분</label>
+                            <select class="form-select">
+                                <option>전체</option>
+                                <option>입주민</option>
+                                <option>방문</option>
+                                <option>정기방문</option>
+                                <option>출역</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>차량번호</label>
+                            <input type="text" class="form-input" placeholder="차량번호 입력">
+                        </div>
+
+                        <button class="btn-primary">조회</button>
+                    </div>
+
+                    <div class="table-controls">
+                        <select class="form-select" style="width: 100px;">
+                            <option value="10">10건</option>
+                            <option value="20">20건</option>
+                            <option value="50">50건</option>
+                            <option value="100">100건</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>고객유형</th>
+                                <th>상담구분</th>
+                                <th>상담목적</th>
+                                <th>발생일시</th>
+                                <th>차량번호</th>
+                                <th>상담내역</th>
+                                <th>동</th>
+                                <th>호</th>
+                                <th>접수자</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>정기방문</td>
+                                <td>정기방문인식</td>
+                                <td>입차</td>
+                                <td>2025-10-21 14:30:25</td>
+                                <td>22가1234</td>
+                                <td>정기방문 차량 자동 입차</td>
+                                <td>101</td>
+                                <td>1002</td>
+                                <td>홍길동</td>
+                            </tr>
+                            <tr>
+                                <td>입주민</td>
+                                <td>입주민인식</td>
+                                <td>입차</td>
+                                <td>2025-10-21 15:20:10</td>
+                                <td>12가3456</td>
+                                <td>입주민 차량 자동 입차</td>
+                                <td>102</td>
+                                <td>1504</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>방문</td>
+                                <td>방문차량</td>
+                                <td>방문</td>
+                                <td>2025-10-21 16:45:33</td>
+                                <td>33나7890</td>
+                                <td>102동 1004호 방문차량 승인 후 입차</td>
+                                <td>102</td>
+                                <td>1004</td>
+                                <td>김경비</td>
+                            </tr>
+                            <tr>
+                                <td>출역</td>
+                                <td>출역차량</td>
+                                <td>업무</td>
+                                <td>2025-10-21 09:15:20</td>
+                                <td>44다1122</td>
+                                <td>택배차량 입차 처리</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>이상담</td>
+                            </tr>
+                            <tr>
+                                <td>방문</td>
+                                <td>방문차량</td>
+                                <td>배달</td>
+                                <td>2025-10-21 18:25:40</td>
+                                <td>55라9988</td>
+                                <td>103동 2001호 배달 차량 입차</td>
+                                <td>103</td>
+                                <td>2001</td>
+                                <td>박근무</td>
+                            </tr>
+                            <tr>
+                                <td>입주민</td>
+                                <td>미등록차량</td>
+                                <td>입차</td>
+                                <td>2025-10-21 19:30:15</td>
+                                <td>66마5544</td>
+                                <td>입주민 신규 차량 등록 후 입차 처리</td>
+                                <td>101</td>
+                                <td>803</td>
+                                <td>최관리</td>
+                            </tr>
+                            <tr>
+                                <td>정기방문</td>
+                                <td>정기방문인식</td>
+                                <td>입차</td>
+                                <td>2025-10-21 20:10:55</td>
+                                <td>77바3366</td>
+                                <td>정기 방문 차량 자동 입차</td>
+                                <td>102</td>
+                                <td>1205</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>방문</td>
+                                <td>방문차량</td>
+                                <td>방문</td>
+                                <td>2025-10-21 21:40:22</td>
+                                <td>88사1100</td>
+                                <td>104동 501호 방문 차량 수동 개방</td>
+                                <td>104</td>
+                                <td>501</td>
+                                <td>정경비</td>
+                            </tr>
+                            <tr>
+                                <td>입주민</td>
+                                <td>입주민인식</td>
+                                <td>출차</td>
+                                <td>2025-10-21 22:15:30</td>
+                                <td>99아6677</td>
+                                <td>입주민 차량 출차 처리</td>
+                                <td>103</td>
+                                <td>1808</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td>출역</td>
+                                <td>출역차량</td>
+                                <td>업무</td>
+                                <td>2025-10-21 23:05:45</td>
+                                <td>11자8899</td>
+                                <td>야간 경비 순찰 차량 입차</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>강야간</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                    <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-page">4</button>
+                    <button class="btn-page">5</button>
+                    <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                    <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/voc-list.js}"></script>
+</body>
+</html>

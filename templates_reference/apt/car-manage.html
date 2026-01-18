@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>차량관리 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/management.css}">
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header('APT관리 → 차량관리')}"></div>
+
+    <main class="management-container">
+        <!-- 좌측: 아파트 목록 -->
+        <aside class="management-sidebar">
+            <div class="sidebar-search">
+                <h3 class="sidebar-title">아파트명</h3>
+                <div class="search-input-group">
+                    <input type="text" class="form-input" placeholder="검색...">
+                    <button class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        조회
+                    </button>
+                </div>
+            </div>
+
+            <div class="item-table-wrapper">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="apt-all">
+                            </th>
+                            <th>아파트 코드</th>
+                            <th>아파트명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentList">
+                        <tr class="item-table-row" th:each="apt, iterStat : ${apartments}"
+                            th:classappend="${iterStat.index == 0} ? 'selected' : ''">
+                            <td>
+                                <input type="checkbox" th:id="'apt' + ${apt.id}"
+                                       th:checked="${iterStat.index == 0}">
+                            </td>
+                            <td class="item-code" th:text="${apt.code}">A1001234</td>
+                            <td class="item-name" th:text="${apt.name}" th:attr="title=${apt.name}">삼성1단지</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                <button class="btn-page active">1</button>
+                <button class="btn-page">2</button>
+                <button class="btn-page">3</button>
+                <button class="btn-page">4</button>
+                <button class="btn-page">5</button>
+                <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+            </div>
+        </aside>
+
+        <!-- 우측: 차량 목록 및 입력 -->
+        <div class="management-content">
+            <!-- 차량 목록 -->
+            <div class="data-grid">
+                <div class="grid-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>아파트명</th>
+                                <th>구분</th>
+                                <th>고객명</th>
+                                <th>차량번호</th>
+                                <th>연락처</th>
+                                <th>시작</th>
+                                <th>종료</th>
+                                <th>사용여부</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="car : ${cars}">
+                                <td th:text="${car.apartment.name}">삼성2단지</td>
+                                <td>
+                                    <span class="badge" th:classappend="${car.carType == 'BLACK'} ? 'badge-error' : (${car.carType == 'WHITE'} ? 'badge-success' : 'badge-info')"
+                                          th:text="${car.carType == 'BLACK' ? '블랙' : (car.carType == 'WHITE' ? '화이트' : (car.carType == 'PERIODIC' ? '정기방문' : '입주민'))}">블랙</span>
+                                </td>
+                                <td th:text="${car.ownerName}">홍길동</td>
+                                <td th:text="${car.carNumber}">12가1111</td>
+                                <td th:text="${car.ownerPhone}">010-1234-5678</td>
+                                <td th:text="${car.registeredAt != null ? #temporals.format(car.registeredAt, 'yyyy-MM-dd') : '-'}">2025-01-01</td>
+                                <td th:text="${car.createdAt != null ? #temporals.format(car.createdAt, 'yyyy-MM-dd') : '-'}">2025-12-31</td>
+                                <td><span class="badge badge-success" th:text="${car.isRegistered ? 'Y' : 'N'}">Y</span></td>
+                            </tr>
+                            <tr th:if="${cars == null or cars.isEmpty()}">
+                                <td colspan="8" style="text-align: center;">등록된 차량이 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                    <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-page">4</button>
+                    <button class="btn-page">5</button>
+                    <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                    <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+                </div>
+            </div>
+
+            <!-- 차량 등록/수정 폼 -->
+            <div class="form-section">
+                <form class="car-form">
+                    <div class="form-field-fixed">
+                        <label class="form-field-label">아파트명</label>
+                        <div class="form-fixed-value">삼성2단지</div>
+                    </div>
+
+                    <div class="form-grid">
+                        <label class="form-field-label">구분</label>
+                        <select class="form-select">
+                            <option>블랙</option>
+                            <option>화이트</option>
+                            <option>정기방문</option>
+                        </select>
+
+                        <label class="form-field-label">고객명</label>
+                        <input type="text" class="form-input" value="홍길동">
+
+                        <label class="form-field-label">차량번호</label>
+                        <input type="text" class="form-input" value="12가1111">
+
+                        <label class="form-field-label">연락처</label>
+                        <input type="tel" class="form-input" value="010-123-4567">
+
+                        <label class="form-field-label">유효기간</label>
+                        <div class="input-group">
+                            <input type="date" class="form-input" value="2025-01-01">
+                            <span>~</span>
+                            <input type="date" class="form-input" value="2025-12-31">
+                        </div>
+
+                        <label class="form-field-label">사용여부</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="isRegistered" value="Y" id="carRegisteredY" checked>
+                                <label for="carRegisteredY">사용</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="isRegistered" value="N" id="carRegisteredN">
+                                <label for="carRegisteredN">미사용</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                            </svg>
+                            초기화
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            저장
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/car-manage.js}"></script>
+</body>
+</html>

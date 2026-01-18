@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main → 대시보드(근무자용) - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/dashboard-worker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="../js/common.js"></script>
+</head>
+<body class="dashboard-page">
+    <!-- Header -->
+        <!-- Header -->
+    <header class="app-header">
+            <div class="header-left">
+                <img src="../images/parkingon-logo.png" alt="ParkingOn Logo" class="brand-logo" style="height: 40px;">
+                <h1 class="page-title" >대시보드(근무자용)</h1>
+            </div>
+
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 12H21M3 6H21M3 18H21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+
+            <nav class="header-nav" id="headerNav">
+                <!-- Main 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">Main</a>
+                    <div class="nav-dropdown">
+                        <a href="../dashboard" class="dropdown-item">대시보드(멀티스크린)</a>
+                        <a href="../dashboard-worker" class="dropdown-item">대시보드(근무자용)</a>
+                    </div>
+                </div>
+
+                <!-- APT관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">APT관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../apt" class="dropdown-item">아파트 단지 관리</a>
+                        <a href="../apt/lpr-device" class="dropdown-item">입/출구 관제기</a>
+                        <a href="../apt/car-manage" class="dropdown-item">차량 관리</a>
+                    </div>
+                </div>
+
+                <!-- VOC관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">VOC관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../voc" class="dropdown-item">VOC 이력</a>
+                        <a href="../voc/inout-car" class="dropdown-item">입출차 이력</a>
+                        <a href="../voc/control-history" class="dropdown-item">차단기 수동제어 이력</a>
+                    </div>
+                </div>
+
+                <!-- 시스템관리 메뉴 -->
+                <div class="nav-item">
+                    <a href="#" class="nav-link">시스템관리</a>
+                    <div class="nav-dropdown">
+                        <a href="../system/user-manage" class="dropdown-item">사용자 관리</a>
+                        <a href="../system/code-manage" class="dropdown-item">공통코드 관리</a>
+                        <a href="../system/config" class="dropdown-item">환경설정</a>
+                        <a href="../system/notify-manage" class="dropdown-item">공지사항</a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="header-right">
+                <span class="user-info" >관리자</span>
+                <button class="btn-logout" onclick="location.href='/logout'">로그아웃</button>
+            </div>
+        </header>
+
+        <script>
+            function toggleMobileMenu() {
+                const nav = document.getElementById('headerNav');
+                nav.classList.toggle('mobile-menu-open');
+            }
+        </script>
+
+    <!-- Main Content: 상단 영역 (CCTV + 폼) -->
+    <main class="dashboard-main">
+        <!-- 좌측: CCTV, 입차이미지, 차단기 제어 -->
+        <div class="left-section">
+            <!-- CCTV 영역 -->
+            <section class="media-panel">
+                <h3>CCTV</h3>
+                <div class="media-viewer">
+                    <div class="media-placeholder">
+                        <p>CCTV 화면 영역</p>
+                        <p class="media-size">320×180px</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 입차이미지 영역 -->
+            <section class="media-panel">
+                <h3>입차이미지</h3>
+                <div class="media-viewer">
+                    <div class="media-placeholder">
+                        <p>입차 이미지 영역</p>
+                        <p class="media-size">320×180px</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 차단기 제어 -->
+            <section class="gate-control-box">
+                <h4>차단기 제어</h4>
+                <div class="gate-buttons">
+                    <button class="btn-gate btn-open selected">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <span>열림</span>
+                    </button>
+                    <button class="btn-gate btn-close">
+                        <i class="fa-solid fa-arrow-down"></i>
+                        <span>닫힘</span>
+                    </button>
+                    <button class="btn-gate btn-open-fixed">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>열림 고정</span>
+                    </button>
+                    <button class="btn-gate btn-open-release">
+                        <i class="fa-solid fa-lock-open"></i>
+                        <span>열림 해제</span>
+                    </button>
+                </div>
+                <div class="gate-auto-control">
+                    <h5>검지시 자동열림</h5>
+                    <div class="auto-control-buttons">
+                        <button class="btn-auto-control">
+                            <i class="fa-regular fa-circle-play"></i>
+                            <span>설정</span>
+                        </button>
+                        <button class="btn-auto-control">
+                            <i class="fa-regular fa-circle-pause"></i>
+                            <span>해제</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 우측: 이전 상담내역 + 폼 입력 + 차단기 제어 라디오 + 저장 -->
+        <aside class="right-section">
+            <!-- 이전 상담내역 -->
+            <div class="history-section">
+                <h4>이전 상담내역</h4>
+                <div class="history-table-wrapper">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th class="history-th-date">일시</th>
+                                <th class="history-th-content">12가 1234 이전 상담내역</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10-14 21:20:21</td>
+                                <td class="history-td-left">102동 1004호...</td>
+                            </tr>
+                            <tr>
+                                <td>10-14 21:20:21</td>
+                                <td class="history-td-left">102동 1004호...</td>
+                            </tr>
+                            <tr>
+                                <td>10-14 21:20:21</td>
+                                <td class="history-td-left">102동 1004호...</td>
+                            </tr>
+                            <tr>
+                                <td>10-14 21:20:21</td>
+                                <td class="history-td-left">102동 1004호...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 상담 정보 입력 폼 -->
+            <div class="consultation-form">
+                <div class="form-field-fixed">
+                    <label class="form-field-label">아파트명</label>
+                    <div class="form-fixed-value">아파트1 단지A</div>
+                </div>
+
+                <div class="form-grid-style">
+                    <label class="form-field-label">입차시간</label>
+                    <input type="text" class="form-input" value="2025. 10. 20. 오후 08:30:50" readonly>
+
+                    <label class="form-field-label">상담시간</label>
+                    <input type="text" class="form-input" value="" readonly>
+
+                    <label class="form-field-label">차량번호</label>
+                    <input type="text" class="form-input" value="12가1234">
+
+                    <label class="form-field-label">고객유형</label>
+                    <select class="form-select select-with-chevron">
+                        <option>방문고객</option>
+                        <option>입주민</option>
+                        <option>출역</option>
+                    </select>
+
+                    <label class="form-field-label">방문목적</label>
+                    <select class="form-select select-with-chevron">
+                        <option>방문</option>
+                        <option>배달</option>
+                        <option>택배</option>
+                    </select>
+
+                    <label class="form-field-label">동</label>
+                    <select class="form-select select-with-chevron">
+                        <option>101</option>
+                        <option>102</option>
+                        <option>103</option>
+                    </select>
+
+                    <label class="form-field-label">호</label>
+                    <select class="form-select select-with-chevron">
+                        <option>1002</option>
+                        <option>1003</option>
+                        <option>1004</option>
+                    </select>
+
+                    <label class="form-field-label">상담내역</label>
+                    <textarea class="form-textarea" rows="5"></textarea>
+                </div>
+            </div>
+
+            <!-- 차단기 제어 라디오 -->
+            <div class="gate-control-radio">
+                <h4>차단기 제어</h4>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="gateControl" value="none">
+                        <span>제어없음</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="gateControl" value="open" checked>
+                        <span>열림</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 저장 버튼 -->
+            <div class="save-button-area">
+                <button class="btn-reset">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>초기화</span>
+                </button>
+                <button class="btn-save">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                    <span>저장</span>
+                </button>
+            </div>
+        </aside>
+    </main>
+
+    <!-- 하단: 아파트 목록 테이블 -->
+    <section class="apartment-monitoring-section">
+        <!-- 검색 바 -->
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="예)본문의 검색 대상어를 입력하세요.">
+            <select class="search-select select-with-chevron" id="rowsPerPage" onchange="updateTableRows()">
+                <option value="10">10건</option>
+                <option value="20">20건</option>
+                <option value="50">50건</option>
+            </select>
+            <button class="btn-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>조회</span>
+            </button>
+        </div>
+
+        <!-- 아파트 목록 테이블 -->
+        <div class="apartment-table-wrapper">
+            <table class="apartment-table">
+                <thead>
+                    <tr class="header-row-1">
+                        <th rowspan="2" class="th-apt-name">아파트명</th>
+                        <th colspan="3" class="th-group">차단기</th>
+                        <th colspan="4" class="th-group">시스템</th>
+                        <th rowspan="2" class="th-last-exit">Last</th>
+                        <th rowspan="2" class="th-etc">기타 장비/비고</th>
+                    </tr>
+                    <tr class="header-row-2">
+                        <th class="th-sub">명칭</th>
+                        <th class="th-sub">상태</th>
+                        <th class="th-sub">운영</th>
+                        <th class="th-sub">CPU</th>
+                        <th class="th-sub">메모리</th>
+                        <th class="th-sub">통신</th>
+                        <th class="th-sub">저장소</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="apt-name" rowspan="2">삼성1단지</td>
+                        <td>정문입구 정기</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>정문입구 방문</td>
+                        <td><span class="badge-status-close">CLOSE</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">32%</span></td>
+                        <td><span class="resource-safe">42%</span></td>
+                        <td>18M</td>
+                        <td>45/100</td>
+                        <td>10-20 14:25</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">래미안2차</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">e편한세상</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">힐스테이트</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-close">CLOSE</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">자이아파트</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">푸르지오</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">더샵</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-close">CLOSE</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">롯데캐슬</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">SK뷰</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">호반베르디움</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-close">CLOSE</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">동아아파트</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">현대아파트</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">대우아파트</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-close">CLOSE</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">LG아파트</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="apt-name">GS아파트</td>
+                        <td>입구#1</td>
+                        <td><span class="badge-status-open">OPEN</span></td>
+                        <td><span class="badge-auto">검지자동</span></td>
+                        <td><span class="resource-safe">30%</span></td>
+                        <td><span class="resource-safe">40%</span></td>
+                        <td>20M</td>
+                        <td>50/100</td>
+                        <td>10-20 14:30</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+            <button class="btn-page" aria-label="첫 페이지">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M9 1L4 6L9 11M6 1L1 6L6 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="btn-page" aria-label="이전 페이지">
+                <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
+                    <path d="M7 1L2 6L7 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="btn-page active">1</button>
+            <button class="btn-page">2</button>
+            <button class="btn-page">3</button>
+            <button class="btn-page">4</button>
+            <button class="btn-page">5</button>
+            <button class="btn-page" aria-label="다음 페이지">
+                <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
+                    <path d="M1 11L6 6L1 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="btn-page" aria-label="마지막 페이지">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path d="M3 11L8 6L3 1M6 11L11 6L6 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- 즐겨찾기 -->
+    <section class="favorites-section">
+        <h4>즐겨찾기</h4>
+        <div class="favorites-buttons">
+            <button class="btn-favorite" onclick="location.href='/voc/inout-car'">
+                <i class="fa-solid fa-car"></i>
+                <span>입출차 이력</span>
+            </button>
+            <button class="btn-favorite" onclick="location.href='/voc/voc-list'">
+                <i class="fa-regular fa-comment-dots"></i>
+                <span>VOC 이력</span>
+            </button>
+            <button class="btn-favorite" onclick="location.href='/voc/control-history'">
+                <i class="fa-regular fa-clock"></i>
+                <span>수동제어 이력</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer with PBX Bar -->
+    <div class="footer-wrapper">
+        <!-- PBX 바 -->
+        <div class="pbx-bar">
+            <button class="btn-pbx">PBX콜: 동아아파트</button>
+        </div>
+
+        <!-- Footer -->
+            <!-- Footer -->
+    <footer class="app-footer">
+            <div class="footer-info">
+                <span>로그인명: <span >관리자</span></span>
+                <span>로그인시간: <span >--:--:--</span></span>
+                <span>현재시간: <span id="currentTime">--:--:--</span></span>
+            </div>
+        </footer>
+
+        <script>
+            // 실시간 시계 업데이트
+            function updateClock() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const date = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                const timeString = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+                const element = document.getElementById('currentTime');
+                if (element) {
+                    element.textContent = timeString;
+                }
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        </script>
+    </div>
+
+    <script src="../js/dashboard-worker.js"></script>
+</body>
+</html>

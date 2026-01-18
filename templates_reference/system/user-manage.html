@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 관리 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/management.css}">
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header('시스템관리 → 사용자 관리')}"></div>
+
+    <main class="management-container">
+        <!-- 좌측: 아파트 목록 -->
+        <aside class="management-sidebar">
+            <div class="sidebar-search">
+                <h3 class="sidebar-title">아파트명</h3>
+                <div class="search-input-group">
+                    <input type="text" class="form-input" placeholder="검색...">
+                    <button class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        조회
+                    </button>
+                </div>
+            </div>
+
+            <div class="item-table-wrapper">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="apt-all">
+                            </th>
+                            <th>아파트 코드</th>
+                            <th>아파트명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentList">
+                        <tr class="item-table-row" th:each="apt, iterStat : ${apartments}"
+                            th:classappend="${iterStat.index == 0} ? 'selected' : ''">
+                            <td>
+                                <input type="checkbox" th:id="'apt' + ${apt.id}"
+                                       th:checked="${iterStat.index == 0}">
+                            </td>
+                            <td class="item-code" th:text="${apt.code}">A1001234</td>
+                            <td class="item-name" th:text="${apt.name}" th:attr="title=${apt.name}">삼성1단지</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                <button class="btn-page active">1</button>
+                <button class="btn-page">2</button>
+                <button class="btn-page">3</button>
+                <button class="btn-page">4</button>
+                <button class="btn-page">5</button>
+                <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+            </div>
+        </aside>
+
+        <!-- 우측: 사용자 목록 및 입력 -->
+        <div class="management-content">
+            <!-- 사용자 목록 -->
+            <div class="data-grid">
+                <div class="table-controls">
+                    <select class="form-select" style="width: 100px;">
+                        <option value="10">10건</option>
+                        <option value="20">20건</option>
+                        <option value="50">50건</option>
+                        <option value="100">100건</option>
+                    </select>
+                </div>
+                <div class="grid-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>아파트명</th>
+                                <th>관리자ID</th>
+                                <th>관리자명</th>
+                                <th>권한유형</th>
+                                <th>연락처</th>
+                                <th>사용여부</th>
+                                <th>등록자ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}">
+                                <td th:text="${user.apartment != null ? user.apartment.name : '-'}">삼성1단지</td>
+                                <td th:text="${user.username}">man01</td>
+                                <td th:text="${user.name}">홍길동</td>
+                                <td th:text="${user.role}">관리자</td>
+                                <td th:text="${user.phone}">010-123-4567</td>
+                                <td><span class="badge badge-success" th:text="${user.isActive ? 'Y' : 'N'}">Y</span></td>
+                                <td th:text="${user.createdBy != null ? user.createdBy : '-'}">admin</td>
+                            </tr>
+                            <tr th:if="${users == null or users.isEmpty()}">
+                                <td colspan="7" style="text-align: center;">등록된 사용자가 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                    <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-page">4</button>
+                    <button class="btn-page">5</button>
+                    <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                    <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+                </div>
+            </div>
+
+            <!-- 사용자 등록/수정 폼 -->
+            <div class="form-section">
+                <form class="user-form">
+                    <div class="form-field-fixed">
+                        <label class="form-field-label">아파트명</label>
+                        <div class="form-fixed-value">삼성1단지</div>
+                    </div>
+
+                    <div class="form-grid">
+                        <label class="form-field-label">관리자명</label>
+                        <input type="text" class="form-input" value="홍길동">
+
+                        <label class="form-field-label">관리자ID</label>
+                        <div class="input-group">
+                            <input type="text" class="form-input" value="man01" id="userId">
+                            <button type="button" class="btn-secondary" onclick="checkUserId()">중복확인</button>
+                        </div>
+
+                        <label class="form-field-label">비밀번호</label>
+                        <input type="password" class="form-input" placeholder="비밀번호">
+
+                        <label class="form-field-label">비밀번호확인</label>
+                        <input type="password" class="form-input" placeholder="비밀번호 확인">
+
+                        <label class="form-field-label">권한유형</label>
+                        <select class="form-select">
+                            <option>관리자</option>
+                            <option>경비실</option>
+                            <option>상담사</option>
+                        </select>
+
+                        <label class="form-field-label">연락처</label>
+                        <input type="tel" class="form-input" value="010-123-4567">
+
+                        <label class="form-field-label">사용여부</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="isActive" value="Y" id="userActiveY" checked>
+                                <label for="userActiveY">사용</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="isActive" value="N" id="userActiveN">
+                                <label for="userActiveN">미사용</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                            </svg>
+                            초기화
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            저장
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/user-manage.js}"></script>
+</body>
+</html>

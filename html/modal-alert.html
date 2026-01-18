@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경고 모달 - ParkingOn</title>
+    <link rel="stylesheet" href="../css/modal.css">
+</head>
+<body>
+
+<!--
+========================================
+사용법:
+1. 아래 모달 HTML을 원하는 페이지에 복사
+2. openModal('alertModal')로 모달 열기
+3. 메시지 텍스트를 상황에 맞게 수정
+========================================
+-->
+
+<!-- 모달 오버레이 및 컨테이너 -->
+<div id="alertModal" class="modal-overlay hidden">
+    <div class="modal-container">
+
+        <!-- 모달 헤더 -->
+        <div class="modal-header">
+            <h2 class="modal-title">콜 처리중</h2>
+            <button class="btn-close" onclick="closeModal('alertModal')">&times;</button>
+        </div>
+
+        <!-- 모달 본문 -->
+        <div class="modal-body">
+            <p class="modal-alert-message">
+                진행중인 콜이 있습니다. '초기화' 또는 '저장' 이후 다음 처리를 수행해 주시기 바랍니다.
+            </p>
+        </div>
+
+        <!-- 모달 푸터 -->
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-secondary" onclick="closeModal('alertModal')">닫기</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    // 모달 열기 함수
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
+    }
+
+    // 모달 닫기 함수
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+
+    // 오버레이 클릭 시 모달 닫기
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal-overlay')) {
+            e.target.classList.add('hidden');
+        }
+    });
+
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const openModals = document.querySelectorAll('.modal-overlay:not(.hidden)');
+            openModals.forEach(modal => modal.classList.add('hidden'));
+        }
+    });
+
+    // 테스트용: 페이지 로드 시 모달 자동 열기
+    window.addEventListener('DOMContentLoaded', function() {
+        openModal('alertModal');
+    });
+</script>
+
+<!--
+========================================
+커스터마이징 가이드:
+1. 모달 제목 변경: <h2 class="modal-title"> 내용 수정
+2. 경고 메시지 변경: <p class="modal-alert-message"> 내용 수정
+3. 버튼 텍스트 변경: <button> 내용 수정
+4. 다른 페이지에 통합 시:
+   - modal.css를 해당 페이지에서 import
+   - 모달 HTML만 복사하여 붙여넣기
+   - openModal('alertModal') 함수를 원하는 이벤트에 연결
+========================================
+-->
+
+</body>
+</html>

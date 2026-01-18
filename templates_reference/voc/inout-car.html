@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>입출차 이력 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/management.css}">
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header('VOC관리 → 입출차 이력')}"></div>
+
+    <main class="management-container">
+        <!-- 좌측: 아파트 목록 -->
+        <aside class="management-sidebar">
+            <div class="sidebar-search">
+                <h3 class="sidebar-title">아파트명</h3>
+                <div class="search-input-group">
+                    <input type="text" class="form-input" placeholder="검색...">
+                    <button class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        조회
+                    </button>
+                </div>
+            </div>
+
+            <div class="item-table-wrapper">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="apt-all">
+                            </th>
+                            <th>아파트 코드</th>
+                            <th>아파트명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentList">
+                        <tr class="item-table-row selected">
+                            <td>
+                                <input type="checkbox" id="apt-all-0" checked>
+                            </td>
+                            <td class="item-code">A000000</td>
+                            <td class="item-name">전체</td>
+                        </tr>
+                        <tr class="item-table-row" th:each="apt, iterStat : ${apartments}">
+                            <td>
+                                <input type="checkbox" th:id="'apt' + ${apt.id}">
+                            </td>
+                            <td class="item-code" th:text="${apt.code}">A1001234</td>
+                            <td class="item-name" th:text="${apt.name}" th:attr="title=${apt.name}">삼성1단지</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                <button class="btn-page active">1</button>
+                <button class="btn-page">2</button>
+                <button class="btn-page">3</button>
+                <button class="btn-page">4</button>
+                <button class="btn-page">5</button>
+                <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+            </div>
+        </aside>
+
+        <!-- 우측: 입출차 이력 조회 -->
+        <div class="management-content">
+            <!-- 입출차 이력 테이블 -->
+            <div class="data-grid">
+                <!-- 검색 바 + 테이블 컨트롤 -->
+                <div class="data-grid-header">
+                    <div class="search-bar">
+                        <div class="input-group">
+                            <label>조회기간</label>
+                            <input type="date" class="form-input" value="2025-10-21">
+                            <span>~</span>
+                            <input type="date" class="form-input" value="2025-10-21">
+                        </div>
+
+                        <div class="input-group">
+                            <label>고객유형</label>
+                            <select class="form-select">
+                                <option>전체</option>
+                                <option>입주민</option>
+                                <option>방문</option>
+                                <option>정기방문</option>
+                                <option>출역</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>차량번호</label>
+                            <input type="text" class="form-input" placeholder="차량번호 입력">
+                        </div>
+
+                        <button class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            조회
+                        </button>
+                    </div>
+
+                    <div class="table-controls">
+                        <select class="form-select" style="width: 100px;">
+                            <option value="10">10건</option>
+                            <option value="20">20건</option>
+                            <option value="50">50건</option>
+                            <option value="100">100건</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>차량번호</th>
+                                <th>입차일시</th>
+                                <th>출차일시</th>
+                                <th>고객구분</th>
+                                <th>동</th>
+                                <th>호</th>
+                                <th>주차시간</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="history : ${histories}" th:if="${histories != null}">
+                                <td th:text="${history.carNumber}">12가1234</td>
+                                <td th:text="${history.inoutType == 'IN' and history.inoutTime != null ? #temporals.format(history.inoutTime, 'yyyy-MM-dd HH:mm:ss') : '-'}">2025-10-21 08:30:25</td>
+                                <td th:text="${history.inoutType == 'OUT' and history.inoutTime != null ? #temporals.format(history.inoutTime, 'yyyy-MM-dd HH:mm:ss') : '-'}">-</td>
+                                <td th:text="${history.customerType != null ? history.customerType : '-'}">입주민</td>
+                                <td th:text="${history.dong != null ? history.dong : '-'}">101</td>
+                                <td th:text="${history.ho != null ? history.ho : '-'}">1002</td>
+                                <td>-</td>
+                                <td>
+                                    <span class="badge" th:classappend="${history.inoutType == 'IN'} ? 'badge-success' : 'badge-info'"
+                                          th:text="${history.inoutType == 'IN' ? '입차' : '출차'}">입차</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${histories == null or histories.isEmpty()}">
+                                <td colspan="8" style="text-align: center;">입출차 이력이 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                    <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-page">4</button>
+                    <button class="btn-page">5</button>
+                    <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                    <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/inout-car.js}"></script>
+</body>
+</html>

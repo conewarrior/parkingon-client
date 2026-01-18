@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공통코드 관리 - 파킹온</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet" th:href="@{/css/management.css}">
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header('시스템관리 → 공통코드 관리')}"></div>
+
+    <main class="management-container">
+        <!-- 좌측: 아파트 목록 -->
+        <aside class="management-sidebar">
+            <div class="sidebar-search">
+                <h3 class="sidebar-title">아파트명</h3>
+                <div class="search-input-group">
+                    <input type="text" class="form-input" placeholder="검색...">
+                    <button class="btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        조회
+                    </button>
+                </div>
+            </div>
+
+            <div class="item-table-wrapper">
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="apt-all">
+                            </th>
+                            <th>아파트 코드</th>
+                            <th>아파트명</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apartmentList">
+                        <tr class="item-table-row selected">
+                            <td>
+                                <input type="checkbox" id="apt-all-0" checked>
+                            </td>
+                            <td class="item-code">A000000</td>
+                            <td class="item-name">전체</td>
+                        </tr>
+                        <tr class="item-table-row" th:each="apt, iterStat : ${apartments}">
+                            <td>
+                                <input type="checkbox" th:id="'apt' + ${apt.id}">
+                            </td>
+                            <td class="item-code" th:text="${apt.code}">A1001234</td>
+                            <td class="item-name" th:text="${apt.name}" th:attr="title=${apt.name}">삼성1단지</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                <button class="btn-page active">1</button>
+                <button class="btn-page">2</button>
+                <button class="btn-page">3</button>
+                <button class="btn-page">4</button>
+                <button class="btn-page">5</button>
+                <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+            </div>
+        </aside>
+
+        <!-- 우측: 코드 상세 목록 및 입력 -->
+        <div class="management-content">
+            <!-- 아파트 코드 검색 -->
+            <div class="search-bar">
+                <div class="input-group">
+                    <label>아파트 코드</label>
+                    <input type="text" class="form-input" placeholder="아파트 코드 입력" style="max-width: 300px;">
+                </div>
+                <button class="btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    조회
+                </button>
+            </div>
+
+            <!-- 코드 상세 목록 -->
+            <div class="data-grid">
+                <div class="table-controls">
+                    <select class="form-select" style="width: 100px;">
+                        <option value="10">10건</option>
+                        <option value="20">20건</option>
+                        <option value="50">50건</option>
+                        <option value="100">100건</option>
+                    </select>
+                </div>
+                <div class="grid-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>순번</th>
+                                <th>구분</th>
+                                <th>한글 코드값</th>
+                                <th>코드</th>
+                                <th>수정일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="code, iterStat : ${codes}" th:if="${codes != null}">
+                                <td th:text="${iterStat.count}">1</td>
+                                <td th:text="${code.groupName != null ? code.groupName : '고객구분'}">고객구분</td>
+                                <td th:text="${code.codeName}">입주민</td>
+                                <td th:text="${code.codeValue}">001</td>
+                                <td th:text="${code.updatedAt != null ? #temporals.format(code.updatedAt, 'yyyy-MM-dd') : '-'}">2025-10-21</td>
+                            </tr>
+                            <tr th:if="${codes == null or codes.isEmpty()}">
+                                <td colspan="5" style="text-align: center;">등록된 코드가 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <button class="btn-page btn-page-first" aria-label="첫 페이지"></button>
+                    <button class="btn-page btn-page-prev" aria-label="이전 페이지"></button>
+                    <button class="btn-page active">1</button>
+                    <button class="btn-page">2</button>
+                    <button class="btn-page">3</button>
+                    <button class="btn-page">4</button>
+                    <button class="btn-page">5</button>
+                    <button class="btn-page btn-page-next" aria-label="다음 페이지"></button>
+                    <button class="btn-page btn-page-last" aria-label="마지막 페이지"></button>
+                </div>
+            </div>
+
+            <!-- 코드 등록/수정 폼 -->
+            <div class="form-section">
+                <form class="code-form">
+                    <div class="form-grid">
+                        <label class="form-field-label">구분</label>
+                        <select class="form-select">
+                            <option>고객구분</option>
+                            <option>일반</option>
+                        </select>
+
+                        <label class="form-field-label">한글코드값</label>
+                        <input type="text" class="form-input" value="일반">
+
+                        <label class="form-field-label">코드</label>
+                        <input type="text" class="form-input" value="300">
+
+                        <label class="form-field-label">사용여부</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="isActive" value="true" id="activeYes" checked>
+                                <label for="activeYes">사용</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="isActive" value="false" id="activeNo">
+                                <label for="activeNo">미사용</label>
+                            </div>
+                        </div>
+
+                        <label class="form-field-label">비고</label>
+                        <input type="text" class="form-input" placeholder="일반자량">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                <path d="M3 3v5h5"></path>
+                            </svg>
+                            초기화
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg>
+                            저장
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script th:src="@{/js/code-manage.js}"></script>
+</body>
+</html>
